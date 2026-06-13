@@ -5,7 +5,7 @@ Image=docker.io/syncthing/syncthing:latest
 Environment=PUID={{ ansible_facts.user_uid }} PGID={{ ansible_facts.user_gid }}
 PublishPort=5900:5900/tcp
 Network=host
-HealthCmd='curl -fkLsS -m 2 127.0.0.1:8384/rest/noauth/health | grep -o --color=never OK || exit 1'
+HealthCmd=curl -fkLsS -m 2 127.0.0.1:8384/rest/noauth/health | grep -o --color=never OK || exit 1
 HealthInterval=1m
 HealthTimeout=10s
 HealthRetries=3

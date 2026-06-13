@@ -1,0 +1,51 @@
+# - name: Retrieve GID of nasusers group
+#   ansible.builtin.getent:
+#     database: group
+#     key: nasusers
+
+# - name: Set fact for nasusers GID
+#   ansible.builtin.set_fact:
+#     nasusers_gid: "{{ ansible_facts.getent_group.nasusers.1 }}"
+
+# - name: Add {{ ansible_facts.user_id }} to nasusers group
+#   user:
+#     name: "{{ ansible_facts.user_id }}"
+#     groups: nasusers
+#     append: yes
+
+- name: Enable linger for {{ ansible_facts.user_id }}
+  ansible.builtin.command:
+    cmd: "loginctl enable-linger {{ ansible_facts.user_uid }}"
+    creates: "/var/lib/systemd/linger/{{ ansible_facts.user_uid }}"
+  become: true
+
+- name: Create quadlets folder for {{ ansible_facts.user_id }} containers
+  become: true
+  ansible.builtin.file:
+    path: "/etc/containers/systemd/users/{{ ansible_facts.user_uid }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '755'
+
+- name: Copy tinymediamanager quadlets
+  become: true
+  block:
+    - name: Copy tinymediamanager files
+      ansible.builtin.copy:
+        src: "files/tinymediamanager/"
+        dest: "/etc/containers/systemd/users/{{ ansible_facts.user_uid }}"
+        owner: root
+        group: root
+        mode: '644'
+
+    - name: Deploy tinymediamanager files
+      ansible.builtin.template:
+        src: "tinymediamanager/tinymediamanager.container.j2"
+        dest: "/etc/containers/systemd/users/{{ ansible_facts.user_uid }}/tinymediamanager.container"
+        owner: root
+        group: root
+        mode: '644'
+  notify:
+    - Reload systemd
+    - Restart tinymediamanager

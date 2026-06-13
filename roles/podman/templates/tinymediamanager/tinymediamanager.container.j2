@@ -1,0 +1,18 @@
+[Container]
+AutoUpdate=registry
+ContainerName=tinymediamanager
+Image=docker.io/tinymediamanager/tinymediamanager:latest
+Environment=USER_ID={{ ansible_facts.user_uid }} GROUP_ID={{ ansible_facts.user_gid }}
+Environment=ALLOW_DIRECT_VNC=true
+Environment=LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+EnvironmentFile=tinymediamanager.env
+PublishPort=5900:5900/tcp
+User=root
+UserNS=keep-id
+GroupAdd=keep-groups
+Volume=tinymediamanager_data:/data:Z
+Volume=/mnt/nas/share/k9/Videos/Movies:/media/movies
+Volume=/mnt/nas/share/k9/Videos/TV:/media/tv_shows
+
+[Install]
+WantedBy=default.target

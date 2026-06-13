@@ -1,0 +1,11 @@
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+    scope: user
+
+- name: Restart tinymediamanager
+  ansible.builtin.systemd:
+    name: "tinymediamanager"
+    state: restarted
+    enabled: true
+    scope: user

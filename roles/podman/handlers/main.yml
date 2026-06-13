@@ -3,6 +3,13 @@
     daemon_reload: true
     scope: user
 
+- name: Restart syncthing
+  ansible.builtin.systemd:
+    name: "syncthing"
+    state: restarted
+    enabled: true
+    scope: user
+
 - name: Restart tinymediamanager
   ansible.builtin.systemd:
     name: "tinymediamanager"

@@ -1,22 +1,13 @@
-# - name: Retrieve GID of nasusers group
-#   ansible.builtin.getent:
-#     database: group
-#     key: nasusers
-
-# - name: Set fact for nasusers GID
-#   ansible.builtin.set_fact:
-#     nasusers_gid: "{{ ansible_facts.getent_group.nasusers.1 }}"
-
-# - name: Add {{ ansible_facts.user_id }} to nasusers group
-#   user:
-#     name: "{{ ansible_facts.user_id }}"
-#     groups: nasusers
-#     append: yes
+- name: Add {{ ansible_facts.user_id }} to nasusers group
+  user:
+    name: "{{ ansible_facts.user_id }}"
+    groups: nasusers
+    append: yes
 
 - name: Enable linger for {{ ansible_facts.user_id }}
   ansible.builtin.command:
     cmd: "loginctl enable-linger {{ ansible_facts.user_uid }}"
-    creates: "/var/lib/systemd/linger/{{ ansible_facts.user_uid }}"
+    creates: "/var/lib/systemd/linger/{{ ansible_facts.user_id }}"
   become: true
 
 - name: Create quadlets folder for {{ ansible_facts.user_id }} containers
@@ -27,6 +18,18 @@
     owner: root
     group: root
     mode: '755'
+
+- name: Copy syncthing quadlets
+  become: true
+  ansible.builtin.template:
+    src: "syncthing/syncthing.container.j2"
+    dest: "/etc/containers/systemd/users/{{ ansible_facts.user_uid }}/syncthing.container"
+    owner: root
+    group: root
+    mode: '644'
+  notify:
+    - Reload systemd
+    - Restart syncthing
 
 - name: Copy tinymediamanager quadlets
   become: true

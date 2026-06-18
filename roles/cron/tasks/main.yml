@@ -1,0 +1,26 @@
+- name: Stow cron scripts
+  ansible.builtin.command:
+    cmd: >
+      {{ ansible_facts.user_dir }}/.local/bin/stow --dotfiles --no-folding
+      --dir={{ role_path }}/files
+      --target={{ ansible_facts.user_dir }}/.scripts
+      config
+  changed_when: false
+
+- name: Copy tinymediamanager API key
+  ansible.builtin.copy:
+    src: "files/tinymediamanager_api_key"
+    dest: "{{ ansible_facts.user_dir }}/.passfiles"
+    owner: "{{ ansible_facts.user_id }}"
+    group: "{{ ansible_facts.user_id }}"
+    mode: '600'
+
+- name: Add scripts to hourly crontab
+  ansible.builtin.cron:
+    name: "{{ item.name }}"
+    special_time: hourly
+    job: "{{ item.script }}"
+  loop:
+    - { name: "export music",    script: "$HOME/.scripts/export_music.sh" }
+    - { name: "export movies",   script: "$HOME/.scripts/export_movies.sh" }
+    - { name: "export tv shows", script: "$HOME/.scripts/export_tv_shows.sh" }

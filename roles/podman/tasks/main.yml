@@ -31,6 +31,18 @@
     - Reload systemd
     - Restart syncthing
 
+- name: Copy calibre quadlets
+  become: true
+  ansible.builtin.template:
+    src: "calibre/calibre.container.j2"
+    dest: "/etc/containers/systemd/users/{{ ansible_facts.user_uid }}/calibre.container"
+    owner: root
+    group: root
+    mode: '644'
+  notify:
+    - Reload systemd
+    - Restart calibre
+
 - name: Copy tinymediamanager quadlets
   become: true
   block:

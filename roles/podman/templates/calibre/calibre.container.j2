@@ -1,0 +1,18 @@
+[Container]
+AutoUpdate=registry
+ContainerName=calibre
+Environment=PUID={{ ansible_facts.user_uid }} PGID={{ ansible_facts.user_uid }}
+Environment=TZ=America/Los_Angeles
+PublishPort=8181:8181/tcp
+Image=lscr.io/linuxserver/calibre:latest
+User=root
+UserNS=keep-id
+GroupAdd=keep-groups
+Volume=calibre_config:/config:U,Z
+Volume=/mnt/nas/share/k9/Books:/Books
+
+[Service]
+TimeoutStartSec=900
+
+[Install]
+WantedBy=default.target

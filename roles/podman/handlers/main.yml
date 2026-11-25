@@ -10,16 +10,16 @@
     enabled: true
     scope: user
 
-- name: Restart calibre
+- name: Restart tinymediamanager
   ansible.builtin.systemd:
-    name: "calibre"
+    name: "tinymediamanager"
     state: restarted
     enabled: true
     scope: user
 
-- name: Restart tinymediamanager
+- name: Restart calibre
   ansible.builtin.systemd:
-    name: "tinymediamanager"
+    name: "calibre"
     state: restarted
     enabled: true
     scope: user

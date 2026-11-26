@@ -17,3 +17,7 @@ Volume=/mnt/nas/share/k9/Videos/TV:/media/tv_shows
 
 [Install]
 WantedBy=default.target
+
+[Service]
+Restart=on-failure
+RestartSec=5s

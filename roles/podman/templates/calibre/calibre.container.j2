@@ -11,8 +11,10 @@ GroupAdd=keep-groups
 Volume=calibre_config:/config:U,Z
 Volume=/mnt/nas/share/k9/Books:/Books
 
-[Service]
-TimeoutStartSec=900
-
 [Install]
 WantedBy=default.target
+
+[Service]
+Restart=on-failure
+RestartSec=5s
+TimeoutStartSec=900

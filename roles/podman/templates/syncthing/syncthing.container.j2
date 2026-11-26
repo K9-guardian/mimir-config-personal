@@ -16,3 +16,7 @@ Volume=/mnt/nas/share/k9:/data
 
 [Install]
 WantedBy=default.target
+
+[Service]
+Restart=on-failure
+RestartSec=5s
